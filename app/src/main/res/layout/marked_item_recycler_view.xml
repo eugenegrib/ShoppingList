@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <CheckBox
+        android:id="@+id/checkBoxDone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/editText"
+        android:layout_alignBottom="@id/editText"
+        android:layout_marginStart="24dp"
+        android:paddingVertical="8dp" />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/ibDelete"
+        android:layout_toEndOf="@id/checkBoxDone"
+        android:background="@null"
+        android:ems="10"
+        android:focusable="true"
+        android:hint="@string/empty"
+        android:inputType="textMultiLine"
+        android:lineSpacingExtra="4sp"
+        android:paddingVertical="8dp"
+        android:textColor="@color/marked_text"
+        android:textSize="20sp"
+        tools:text="Что-то купленное" />
+
+
+    <ImageButton
+        android:id="@+id/ibDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/editText"
+        android:layout_alignBottom="@id/editText"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="12dp"
+        android:background="@null"
+        android:paddingVertical="8dp"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_baseline_close_24" />
+</RelativeLayout>

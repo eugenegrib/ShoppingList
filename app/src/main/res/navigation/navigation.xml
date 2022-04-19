@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation.xml"
+    app:startDestination="@id/mainFragment">
+
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.goshopping.shoppinglist.presentation.fragments.MainItemFragment"
+        android:label="MainFragment"
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_mainFragment_to_editShopList"
+            app:destination="@id/editShopList" />
+        <action
+            android:id="@+id/action_mainFragment_to_newListFragment"
+            app:destination="@id/newListFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editShopList"
+        android:name="com.goshopping.shoppinglist.presentation.fragments.EditShopListFragment"
+        android:label="edit_shop_list_fragment"
+        tools:layout="@layout/edit_shop_list_fragment" >
+
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/newListFragment"
+        android:name="com.goshopping.shoppinglist.presentation.fragments.NewListFragment"
+        android:label="NewListFragment" />
+</navigation>
