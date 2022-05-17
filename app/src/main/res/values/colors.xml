@@ -10,6 +10,11 @@
     <color name="yellow_500">#FFC107</color>
     <color name="marked_text">#868686</color>
     <color name="bottom_app_bar">#FDD616</color>
-    <color name="purple_purple">#FFECB3</color>
-
+    <color name="transparent">#00000000</color>
+    <color name="yellow">#FFEE58</color>
+    <color name="blue">#29B6F6</color>
+    <color name="orange">#FF7043</color>
+    <color name="red">#EC407A</color>
+    <color name="grey">#848484</color>
+    <color name="green">#66BB6A</color>
 </resources>

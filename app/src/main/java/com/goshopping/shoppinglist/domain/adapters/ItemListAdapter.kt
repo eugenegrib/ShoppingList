@@ -2,11 +2,8 @@ package com.goshopping.shoppinglist.domain.adapters
 
 import android.annotation.SuppressLint
 import android.content.ContentValues.TAG
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -25,8 +22,7 @@ import java.util.*
  */
 
 class ItemListAdapter(
-    private val moreFunctions: MoreFunctions,
-    private val onItemClicked: (Item) -> Unit
+    private val moreFunctions: MoreFunctions
 ) : ListAdapter<Item, ItemListAdapter.ViewHolder>(TaskItemDiffCallback()) {
 
     var onMoved: (() -> Unit)? = null
@@ -34,7 +30,6 @@ class ItemListAdapter(
     fun onMoved() {
         onMoved?.invoke()
     }
-
 
     fun swap(targetPos: Int, startsPos: Int) {
         val mutableList = currentList.toMutableList()
@@ -49,7 +44,6 @@ class ItemListAdapter(
     // Когда элемент становится видимым пользователю
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
-
         // После добавление нового элемента вызываем код ниже
         if (moreFunctions.isAddedNewTask) {
             val editText = holder.view.findViewById<EditText>(R.id.editText)
@@ -63,52 +57,49 @@ class ItemListAdapter(
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val current = getItem(holder.layoutPosition)
+        val current = getItem(holder.bindingAdapterPosition)
         val binding = ItemRecyclerViewBinding.bind(holder.view)
 
-        with(binding) {
-            editText.setText(current.itemName)
-            checkBoxDone.isChecked = current.itemCheck
+            with(binding) {
+                editText.setText(current.itemName)
+                checkBoxDone.isChecked = current.itemCheck
 
-            checkBoxDone.setOnClickListener {
-                editText.clearFocus()
-                onItemClicked(current.copy(itemCheck = checkBoxDone.isChecked,itemName = binding.editText.text.toString()))
-                moreFunctions.clearFocus()
-                moreFunctions.closeKeyboard(editText)
-                moreFunctions.updateCheckBox(current)
-            }
+                checkBoxDone.setOnClickListener {
+                    editText.clearFocus()
+                    moreFunctions.updateCheckBox(true,current.copy(itemCheck = checkBoxDone.isChecked,itemName = binding.editText.text.toString()))
+                    moreFunctions.clearFocus()
+                    moreFunctions.closeKeyboard(editText)
+                }
 
-            ibDelete.setOnClickListener {
-                moreFunctions.deleteItem(current)
-                moreFunctions.clearFocus()
-                onMoved?.invoke()
-            }
+                ibDelete.setOnClickListener {
+                    moreFunctions.deleteItem(current,false)
+                    moreFunctions.clearFocus()
+                    onMoved?.invoke()
+                }
 
-            editText.setOnClickListener {
-                if (!editText.hasFocus()) {
-                    editText.requestFocus()
+                editText.setOnClickListener {
+                    if (!editText.hasFocus()) {
+                        editText.requestFocus()
+                    }
+                }
+
+                btnMoveItem.setOnTouchListener { _, _ ->
+                    moreFunctions.closeKeyboard(editText)
+                    moreFunctions.onStartDrag(holder)
+                    moreFunctions.clearFocus()
+                    true
+                }
+
+                editText.onFocusChangeListener = View.OnFocusChangeListener { _, p1 ->
+                    if (p1) {
+                        ibDelete.visibility = View.VISIBLE
+                    } else {
+                        ibDelete.visibility = View.INVISIBLE
+                        moreFunctions.updateItem(getItem(holder.bindingAdapterPosition).copy(itemName = binding.editText.text.toString()))
+                        Log.v(TAG, "Сохранение в базу данных")
+                    }
                 }
             }
-
-            btnMoveItem.setOnTouchListener { _, _ ->
-                moreFunctions.closeKeyboard(editText)
-                moreFunctions.onStartDrag(holder)
-                moreFunctions.clearFocus()
-                true
-            }
-
-
-
-            editText.onFocusChangeListener = View.OnFocusChangeListener { _, p1 ->
-                if (p1) {
-                    ibDelete.visibility = View.VISIBLE
-                } else {
-                    ibDelete.visibility = View.INVISIBLE
-                    moreFunctions.updateItem(getItem(holder.layoutPosition).copy(itemName = binding.editText.text.toString()))
-                    Log.v(TAG, "Сохранение в базу данных")
-                }
-            }
-        }
     }
 
 

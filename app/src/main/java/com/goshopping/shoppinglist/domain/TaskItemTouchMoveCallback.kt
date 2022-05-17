@@ -13,8 +13,8 @@ class TaskItemTouchMoveCallback(private val adapter: ItemListAdapter) :
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        val fromPos = viewHolder.layoutPosition
-        val toPos = target.layoutPosition
+        val fromPos = viewHolder.bindingAdapterPosition
+        val toPos = target.bindingAdapterPosition
         adapter.swap(fromPos, toPos)
         return true
     }

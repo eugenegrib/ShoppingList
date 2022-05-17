@@ -17,26 +17,20 @@ interface ItemDao {
     @Query("SELECT * from item WHERE `check` IS 1 ORDER BY position ASC")
     fun getItemsCheck(): Flow<List<Item>>
 
-    @Query("SELECT * from item WHERE `check` IS 0 AND parent IS :parent ORDER BY position ASC")
-    fun getItemsNotCheckFromParent(parent: Int): Flow<List<Item>>
-
-    @Query("SELECT * from item WHERE `check` IS 0 AND parent IS :parent ORDER BY position ASC")
-    suspend fun getItemsNotCheckFromParent2(parent: Int): List<Item>
-
-    @Query("SELECT * from item WHERE `check` IS 1 AND parent IS :id ORDER BY position ASC")
-    suspend fun getItemsCheckFromParent2(id: Int): List<Item>
-
-    @Query("SELECT * from item WHERE `check` IS 0 AND parent IS :parent ORDER BY position ASC")
-    suspend fun getItemsNotCheckParent(parent: Int): List<Item>
+    @Query("SELECT * from item WHERE `check` IS 0 AND parent IS :id ORDER BY position ASC")
+    fun getItemsNotCheckFromParent(id: Int): Flow<List<Item>>
 
     @Query("SELECT * from item WHERE `check` IS 1 AND parent IS :id ORDER BY position ASC")
     fun getItemsCheckFromParent(id: Int): Flow<List<Item>>
 
-    @Query("SELECT * from item WHERE parent IS :id ORDER BY position ASC")
-    fun getAllItems(id: Int): Flow<List<Item>>
+    @Query("SELECT * from item WHERE parent IS :parent ORDER BY position ASC")
+    fun getAllItems(parent: Int): Flow<List<Item>>
 
     @Query("SELECT * from item ORDER BY position ASC")
     fun getAll(): Flow<List<Item>>
+
+    @Query("SELECT * from item WHERE parent IS :parent ORDER BY position ASC")
+    fun getAllSuspend(parent: Int): List<Item>
 
     @Query("DELETE from item WHERE parent = :id")
     suspend fun deleteItemFromCategory(id: Int)

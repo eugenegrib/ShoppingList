@@ -19,42 +19,26 @@ import kotlin.reflect.KProperty
  */
 
 class MarkedItemListAdapter(
-    private val onItemClicked: (Item) -> Unit, private val moreFunctions: MoreFunctions
+    private val moreFunctions: MoreFunctions
 ) : ListAdapter<Item, MarkedItemListAdapter.MarkedViewHolder>(MarkedTaskItemDiffCallback()) {
-
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MarkedViewHolder {
         return createItem(parent)
     }
 
     override fun onBindViewHolder(holder: MarkedViewHolder, position: Int) {
-        var current = getItem(position)
-        val binding = MarkedItemRecyclerViewBinding.bind(holder.view)
-
-        with(binding) {
-            editText.text = current.itemName
-
-
-            val string = SpannableString(editText.text)
+        val current = getItem(holder.bindingAdapterPosition)
+        with(MarkedItemRecyclerViewBinding.bind(holder.view)) {
+            val string = SpannableString(current.itemName)
             string.setSpan(StrikethroughSpan(), 0, string.length, 0)
-
             editText.text = string
-
-            checkBoxDone.isChecked = current.itemCheck
-
+            checkBoxDone.isChecked = true
             checkBoxDone.setOnClickListener {
-                current = current.copy(itemCheck = checkBoxDone.isChecked)
-                onItemClicked(current)
-                //moreFunctions.clearFocus()
-                moreFunctions.updateCheckBox(current)
+                moreFunctions.updateCheckBox(false,current.copy(itemCheck = checkBoxDone.isChecked))
             }
-
             ibDelete.setOnClickListener {
-               // moreFunctions.deleteItem(getItem(holder.adapterPosition))
+                moreFunctions.deleteItem(getItem(holder.bindingAdapterPosition), true)
             }
-
-
             editText.onFocusChangeListener = View.OnFocusChangeListener { p0, p1 ->
                 if (p1) {
                     ibDelete.visibility = View.VISIBLE
@@ -75,9 +59,7 @@ class MarkedItemListAdapter(
     }
 
     class MarkedViewHolder(val view: View) : RecyclerView.ViewHolder(view)
-
 }
-
 
 class MarkedTaskItemDiffCallback: DiffUtil.ItemCallback<Item>() {
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {

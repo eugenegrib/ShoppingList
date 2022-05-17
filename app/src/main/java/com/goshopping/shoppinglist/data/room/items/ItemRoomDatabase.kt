@@ -19,7 +19,7 @@ abstract class ItemRoomDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     ItemRoomDatabase::class.java,
-                    "223"
+                    "223121"
                 )
                     .fallbackToDestructiveMigration()
                     .build()

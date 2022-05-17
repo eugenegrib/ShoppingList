@@ -10,9 +10,9 @@ interface MoreFunctions {
     fun clearFocus(){}
     fun updateItem(item: Item){}
     fun requestFocus(view: View){}
-    fun deleteItem(item: Item){}
+    fun deleteItem(item: Item, isChecked:Boolean){}
     fun onStartDrag(holder: ItemListAdapter.ViewHolder)
-    fun updateCheckBox(item: Item){}
+    fun updateCheckBox(addOrRemove: Boolean, item: Item){}
     var isAddedNewTask: Boolean
     fun showKeyboard(edittext: EditText){}
     fun closeKeyboard(edittext: EditText){}

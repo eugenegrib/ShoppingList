@@ -8,10 +8,13 @@
     android:layout_margin="4dp">
 
     <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.Material3.CardView.Filled"
-        android:backgroundTint="@color/purple_purple">
+        android:elevation="8dp"
+        app:cardBackgroundColor="?colorPrimarySurface"
+      >
+
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -28,8 +31,7 @@
                 android:lineSpacingExtra="4sp"
                 android:paddingVertical="8dp"
                 android:paddingStart="16dp"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="24sp"
+                android:textColor="@color/black"
                 tools:text="Какая-то покупка" />
 
             <TextView
@@ -37,10 +39,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
                 android:layout_marginEnd="16dp"
                 android:maxLines="1"
                 android:paddingVertical="8dp"
-                android:textSize="20sp"
                 tools:text="7/10" />
 
         </RelativeLayout>

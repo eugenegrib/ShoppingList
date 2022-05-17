@@ -9,13 +9,16 @@ import kotlinx.coroutines.flow.Flow
 interface MainItemDao {
 
     @Query("SELECT * from mainitem WHERE id = :id")
-    fun getItem(id: Int): Flow<MainItem>
-
-    @Query("SELECT * from mainitem WHERE id IS :id")
      fun getCategory(id: Int): Flow<MainItem>
+
+    @Query("SELECT * from mainitem WHERE id = :id")
+    suspend fun getCategorySuspend(id: Int): MainItem?
 
     @Query("SELECT * from mainitem ORDER BY position ASC")
     fun getAllItems(): Flow<List<MainItem>>
+
+    @Query("SELECT * from mainitem ORDER BY position ASC")
+    suspend fun getAllItemsSuspend(): List<MainItem>
 
     @Query("DELETE from mainitem WHERE id is :parent")
     suspend fun deleteFromParent(parent:Int)

@@ -2,19 +2,21 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainmainmain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_main_gradient">
+    android:background="?colorPrimary"
+    android:fitsSystemWindows="true">
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imageBugs"
+        android:id="@+id/back_image"
         android:layout_width="180dp"
         android:layout_height="180dp"
         android:layout_gravity="end|top"
         android:layout_margin="16dp"
         android:animateLayoutChanges="true"
         android:scaleType="fitXY"
-        app:srcCompat="@drawable/ic_pockets" />
+        app:srcCompat="@drawable/back_for_yellow_theme" />
 
     <!-- The NavHostFragment within the activity_main layout -->
     <com.google.android.material.card.MaterialCardView
@@ -35,7 +37,6 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation"
             tools:layout="@layout/edit_shop_list_fragment">
-
         </androidx.fragment.app.FragmentContainerView>
     </com.google.android.material.card.MaterialCardView>
 
@@ -44,24 +45,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/bottom_app_bar"
+        android:backgroundTint="?colorPrimary"
         android:fadeScrollbars="true"
-        app:fabCradleRoundedCornerRadius="8dp"
+        android:fitsSystemWindows="true"
+        android:hapticFeedbackEnabled="false"
+        app:fabCradleRoundedCornerRadius="4dp"
+        app:hideOnScroll="false"
         app:menu="@menu/bottom_app_bar"
         app:navigationIcon="@drawable/ic_baseline_menu_24">
-
     </com.google.android.material.bottomappbar.BottomAppBar>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/bottom_app_bar"
+        android:adjustViewBounds="false"
+        android:backgroundTint="?colorPrimary"
+        android:fitsSystemWindows="true"
         android:transitionName="shared_element_container"
         app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-        tools:ignore="SpeakableTextPresentCheck" />
-
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

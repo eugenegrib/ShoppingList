@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.goshopping.shoppinglist.R
 import com.goshopping.shoppinglist.data.room.items.Item
+import com.goshopping.shoppinglist.databinding.ItemRecyclerViewBinding
 import com.goshopping.shoppinglist.databinding.NewItemBinding
 import com.goshopping.shoppinglist.domain.MoreFunctions
 
@@ -18,8 +19,7 @@ import com.goshopping.shoppinglist.domain.MoreFunctions
  */
 
 class NewItemAdapter(
-    private val moreFunctions: MoreFunctions,
-    private val onItemClicked: () -> Unit
+    private val onItemClicked2: () -> Unit
 ) : ListAdapter<String, NewItemAdapter.NewViewHolder>(TaskItemDiffCallback1()) {
 
 
@@ -27,10 +27,11 @@ class NewItemAdapter(
         return createItem(parent)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: NewViewHolder, position: Int) {
         val binding = NewItemBinding.bind(holder.view)
         binding.newItem.setOnClickListener{
-            onItemClicked()
+            onItemClicked2()
         }
     }
 

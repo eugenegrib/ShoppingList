@@ -55,11 +55,11 @@ abstract class SwipeHelper(private val recyclerView: RecyclerView) :
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
         //если позиция, до которой мы дотронулись не равна элементу, который мы смахиваем
-        if (swipedPos != viewHolder.layoutPosition) {
+        if (swipedPos != viewHolder.bindingAdapterPosition) {
             recoverQueue.poll()
             recoverQueue.add(swipedPos)
             //присвоить swipedPos идентификатор смахиваемого элемента
-            swipedPos = viewHolder.layoutPosition
+            swipedPos = viewHolder.bindingAdapterPosition
         }
 
 
@@ -106,7 +106,7 @@ abstract class SwipeHelper(private val recyclerView: RecyclerView) :
         actionState: Int,
         isCurrentlyActive: Boolean
     ) {
-        val position = viewHolder.layoutPosition
+        val position = viewHolder.bindingAdapterPosition
         val itemView = viewHolder.itemView
         if (position < 0) {
             swipedPos = position

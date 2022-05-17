@@ -1,20 +1,97 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
+
     <style name="Theme.ShoppingList" parent="Theme.Material3.Light">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
-        <item name="colorOnSecondary">@color/black</item>
-        <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:windowFullscreen">true</item>
-
-        <!-- Customize your theme here. -->
+        <item name="colorControlHighlight">@color/white</item>
     </style>
+
+    <style name="Theme.ShoppingList.Yellow" parent="Theme.ShoppingList">
+        <item name="colorPrimary">@color/purple_500</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimarySurface">#fffde7</item>
+    </style>
+
+    <style name="Theme.ShoppingList.Red" parent="Theme.ShoppingList">
+        <item name="colorPrimary">#f44336</item>
+        <item name="colorPrimaryVariant">#e57373</item>
+        <item name="colorPrimarySurface">#ffcdd2</item>
+    </style>
+
+    <style name="Theme.ShoppingList.Orange" parent="Theme.ShoppingList">
+        <item name="colorPrimary">#ff7043</item>
+        <item name="colorPrimaryVariant">#ffab91</item>
+        <item name="colorPrimarySurface">#ffccbc</item>
+    </style>
+
+    <style name="Theme.ShoppingList.Blue" parent="Theme.ShoppingList">
+        <item name="colorPrimary">#42A5F5</item>
+        <item name="colorPrimaryVariant">#2196F3</item>
+        <item name="colorPrimarySurface">#E3F2FD</item>
+    </style>
+
+    <style name="Theme.ShoppingList.Grey" parent="Theme.ShoppingList">
+        <item name="colorPrimary">#78909c</item>
+        <item name="colorPrimaryVariant">#BCBCBC</item>
+        <item name="colorPrimarySurface">#E0E0E0</item>
+    </style>
+
+    <style name="Theme.ShoppingList.Green" parent="Theme.ShoppingList">
+        <item name="colorPrimary">#66bb6a</item>
+        <item name="colorPrimaryVariant">#a5d6a7</item>
+        <item name="colorPrimarySurface">#c8e6c9</item>
+        <item name="android:statusBarColor">#338a3e</item>
+    </style>
+
+    <style name="Theme.ShoppingList.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.ShoppingList.ActionBar">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+
+    <style name="Theme.ShoppingList.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.ShoppingList.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="light">
+        <item name="fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="medium">
+        <item name="fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="bold">
+        <item name="fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="cursive">
+        <item name="fontFamily">cursive</item>
+    </style>
+
+    <style name="fontSizeVerySmall">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="fontSizeSmall">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="fontSizeNormal">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="fontSizeBig">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="fontSizeVeryBig">
+        <item name="android:textSize">28sp</item>
+    </style>
+
 </resources>

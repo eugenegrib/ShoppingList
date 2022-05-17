@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">ShoppingList</string>
-    <string name="hint_title">Назовите список</string>
-    <string name="new_item">Добавьте покупку</string>
-    <string name="empty">Что купить?</string>
-    <string name="search">Поиск</string>
-    <string name="nav_item2">Поиск</string>
+    <string name="hint_title">Name the list</string>
+    <string name="new_item">Add a purchase</string>
+    <string name="empty">What to buy</string>
+    <string name="search">Search</string>
+    <string name="nav_item2">Search</string>
     <string name="title_activity_settings">ShopList</string>
     <string name="nav_item1">Setting</string>
     <string name="nav_item4">Info</string>
@@ -16,10 +16,21 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="preference_file_key">com.goshoppping.shoppinglist.PREFERENCE_FILE_KEY</string>
     <string name="first_run">firstRun</string>
-    <string name="prompt_message">Создайте свой первый список</string>
     <string name="accept">Yes</string>
     <string name="decline">No</string>
     <string name="title">Delete this list?</string>
     <string name="delete">Delete</string>
-    <string name="spiskipokupok">Списки покупок</string>
+    <string name="spiskipokupok">Shopping lists</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string-array name="empty_array"/>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="order_confirmation">fgfg</string>
+    <string name="ok">Ok</string>
 </resources>

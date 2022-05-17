@@ -6,19 +6,15 @@
     android:layout_height="match_parent"
     android:transitionGroup="true"
     android:transitionName="shared_element_container"
-    android:background="@color/white"
     tools:context=".presentation.fragments.EditShopListFragment"
     android:id="@+id/firstFragment">
-
-
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/spiskipokupok"
-        android:textSize="28sp"
         android:layout_marginTop="16dp"
+        android:text="@string/spiskipokupok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

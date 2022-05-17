@@ -37,8 +37,7 @@
         android:inputType="textMultiLine"
         android:lineSpacingExtra="4sp"
         android:paddingVertical="8dp"
-        android:textColor="?attr/colorOnSecondary"
-        android:textSize="20sp"
+        android:textColor="@color/black"
         tools:text="Какая-то покупка"
         />
 

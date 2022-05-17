@@ -1,22 +1,21 @@
 package com.goshopping.shoppinglist.presentation.fragments
 
-import android.content.ContentValues.TAG
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.transition.TransitionInflater
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.transition.MaterialFadeThrough
@@ -32,13 +31,7 @@ import com.goshopping.shoppinglist.presentation.viewModels.MainViewModel
 import com.goshopping.shoppinglist.presentation.viewModels.MainViewModelFactory
 import kotlinx.coroutines.launch
 
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class MainItemFragment : Fragment(), MoreFunctionsMainItem {
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var recyclerViewAdapter: MainListAdapter
     lateinit var item: MainItem
     private var _binding: MainFragmentBinding? = null
@@ -46,15 +39,12 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
     var mainList: List<MainItem> = listOf()
     private lateinit var viewModel: MainViewModel
     private lateinit var viewModelFactory: MainViewModelFactory
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         exitTransition = MaterialFadeThrough()
         enterTransition = MaterialFadeThrough()
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(
@@ -65,7 +55,7 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
         _binding = MainFragmentBinding.inflate(inflater, container, false)
         viewModelFactory = MainViewModelFactory(
             (activity?.application as StartApplication).mainDatabase.mainItemDao(),
-            (activity?.application as StartApplication).database.itemDao(), 0
+            (activity?.application as StartApplication).database.itemDao()
         )
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
         return binding.root
@@ -73,31 +63,31 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-         val inflater = TransitionInflater.from(activity)
-            exitTransition = inflater.inflateTransition(R.transition.fade)
-
-        viewModel.allItemsNotCheck.observe(viewLifecycleOwner) { items ->
-            items.let {
-                viewModel.createMainItemsList(it, mainList)
-            }
+        when (sharedPreferences.getString("fontSize", "")) {
+            "Very small" -> binding.textView.textSize = 16F
+            "Small" ->  binding.textView.textSize = 20F
+            "Normal" ->  binding.textView.textSize = 24F
+            "Big" ->  binding.textView.textSize = 28F
+            "Very Big" ->  binding.textView.textSize = 32F
         }
 
+        val inflater = TransitionInflater.from(activity)
+        exitTransition = inflater.inflateTransition(R.transition.fade)
+        viewModel.createMainItemsList()
         viewModel.allMainItems.observe(viewLifecycleOwner) { items ->
             items.let {
                 recyclerViewAdapter.submitList(it)
                 mainList = it
             }
         }
-
         val resId: Int = R.anim.layout_animation_fall_down
         val animation: LayoutAnimationController =
             AnimationUtils.loadLayoutAnimation(activity, resId)
-
         recyclerViewAdapter = MainListAdapter(this) { openFragment(it) }
         binding.firstRV.adapter = recyclerViewAdapter
         binding.firstRV.layoutAnimation = animation
-
         val swipeHelper: SwipeHelper = object : SwipeHelper(binding.firstRV) {
             override fun instantiateUnderlayButton(
                 viewHolder: RecyclerView.ViewHolder?,
@@ -119,7 +109,7 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
                                         }
                                         .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
                                             val mainItem = recyclerViewAdapter.currentList[pos]
-                                            viewModel.deleteItemMain(mainItem.id, mainItem)
+                                            viewModel.deleteItemMain(mainItem)
                                         }
                                         .show()
                                 }
@@ -136,9 +126,9 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
 
     fun openFragment(mainItem: MainItem) {
         val action = MainItemFragmentDirections.actionMainFragmentToEditShopList(
-                mainItem.id,
-                mainItem.parentName
-            )
+            mainItem.id,
+            mainItem.parentName
+        )
 
         findNavController().navigate(action)
         with((activity as MainActivity)) {
@@ -159,7 +149,6 @@ class MainItemFragment : Fragment(), MoreFunctionsMainItem {
     }
 
     override fun deleteMainItem(mainItem: MainItem) {
-        viewModel.deleteMainItem(mainItem)
+        viewModel.deleteItemMain(mainItem)
     }
-
 }

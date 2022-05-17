@@ -1,64 +1,94 @@
 package com.goshopping.shoppinglist.presentation.viewModels
 
-import android.os.Handler
-import com.goshopping.shoppinglist.data.room.mainScreen.MainItemDao
-
 
 import androidx.lifecycle.*
 import com.goshopping.shoppinglist.data.room.items.Item
 import com.goshopping.shoppinglist.data.room.items.ItemDao
 import com.goshopping.shoppinglist.data.room.mainScreen.MainItem
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.catch
+import com.goshopping.shoppinglist.data.room.mainScreen.MainItemDao
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MainViewModel(
     private val mainItemDao: MainItemDao,
-    private val itemDao: ItemDao, private val parentID: Int
+    private val itemDao: ItemDao
 ) : ViewModel() {
 
-    var parent: MutableLiveData<Int>? = null
-
-    //запрос списка main
     val allMainItems: LiveData<List<MainItem>> = mainItemDao.getAllItems().asLiveData()
-
-    val getCategory: LiveData<MainItem> = mainItemDao.getCategory(parentID).asLiveData()
-
-    val listMain: LiveData<List<Item>> = itemDao.getAllItems(parentID).asLiveData()
-
-    val getMarkedParent: LiveData<List<Item>> =
-        itemDao.getItemsCheckFromParent(parentID).asLiveData()
-
-    //запрос неотмеченнных покупок
-    val allItemsNotCheck: MutableLiveData<List<Item>> =
-        itemDao.getItemsNotCheck().asLiveData() as MutableLiveData<List<Item>>
-
     var newPosition = 0
 
 
-    /**
-     *  Устанавливаем значение категории
-     */
-    fun setParent(parent1: Int) {
-        parent?.value = parent1
+    fun getListMain(parent: Int): LiveData<List<Item>> {
+        return itemDao.getAllItems(parent).asLiveData()
     }
 
-    fun getParent(): LiveData<List<Item>> {
-        return itemDao.getItemsNotCheckFromParent(parentID)
-            .asLiveData()
+    fun getParent(parent: Int): LiveData<List<Item>> {
+        return itemDao.getItemsNotCheckFromParent(parent).asLiveData()
     }
 
-    fun getParentMarked(): LiveData<List<Item>> {
-        return itemDao.getItemsCheckFromParent(parentID)
-            .asLiveData()
+    fun getParentMarked(parent: Int): LiveData<List<Item>> {
+        return itemDao.getItemsCheckFromParent(parent).asLiveData()
     }
 
-    fun addCategory() {
+    fun getCategory(parent: Int): LiveData<MainItem> {
+        return mainItemDao.getCategory(parent).asLiveData()
+    }
+
+    suspend fun getMainList(): List<MainItem> {
+        return mainItemDao.getAllItemsSuspend()
+    }
+
+
+    fun setNameMainIfEmpty(parentID: Int) {
+        viewModelScope.launch {
+            val category = mainItemDao.getCategorySuspend(parentID)
+            category?.let {
+                val parentName = category.parentName.trim()
+                if (parentName == "") {
+                    val newParentName = "List №"
+                    val list = mutableListOf<String>()
+                    for (i in allMainItems.value!!) {
+                        if (i.parentName.contains(newParentName, true)) {
+                            list.add(i.parentName)
+                        }
+                    }
+                    val newName = "List №${ghjio(list)}"
+                    updateCategory(category.copy(parentName = newName))
+                }
+            }
+        }
+    }
+
+    fun ghjio(list: List<String>): Int {
+        var int = 1
+        if (list.isEmpty()) {
+            return 1
+        } else {
+            var bool = true
+            while (bool) {
+                for (i in list) {
+                    if (i.contains(("$int"), true)) {
+                        int++
+                        bool = true
+                        break
+                    } else {
+                        bool = false
+                    }
+                }
+            }
+
+        }
+        return int
+    }
+
+    fun addCategory(parent: Int) {
         viewModelScope.launch {
             mainItemDao.insert(
                 MainItem(
-                    id = parentID,
+                    id = parent,
                     parentName = "",
                     position = newPosition++,
                     allItems = 0,
@@ -94,45 +124,59 @@ class MainViewModel(
         )
     }
 
+    /**
+     * Проверяет, есть ли пустые элементы
+     */
+    fun haveEmptyItems(parentID: Int) : Boolean {
+        var boolean = true
+            val itemFromParentID = itemDao.getAllSuspend(parentID)
+            for (i in itemFromParentID) {
+                if (i.itemName.trim() == "") {
+                    boolean = false
+                }
+            }
+        return boolean
+    }
+
 
     /**
      * Добавляем новую покупку
      */
-    fun addNewItem(ID: Int, main: MainItem, position: Int) {
-        viewModelScope.launch {
-            val newItem = newItem(
-                "",
-                false,
-                position = position,
-                parent = ID
+    fun addNewItem(parentID: Int, position: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val main = mainItemDao.getCategorySuspend(parentID)
+           // if (haveEmptyItems(parentID)){
+            itemDao.insert(
+                newItem(
+                    "",
+                    false,
+                    position = position,
+                    parent = parentID
+                )
             )
-            itemDao.insert(newItem)
-
-            val new = main.copy(allItems = main.allItems + 1)
-            updateCategory(new)
+            updateCategory(
+                main!!.copy(allItems = main.allItems + 1)
+            )
+       //}
         }
     }
 
     /**
      * Удаляем покупку по нажатию на крестик
      */
-    fun deleteItem(item: Item, main: MainItem?) {
-        val new = main!!.copy(allItems = main.allItems - 1)
+    fun deleteItem(item: Item, main: MainItem?, isChecked: Boolean) {
+        val new = if (isChecked) {
+            main!!.copy(allItems = main.allItems - 1, checkedItems = main.checkedItems - 1)
+        } else {
+            main!!.copy(allItems = main.allItems - 1)
+        }
         updateCategory(new)
-
         viewModelScope.launch {
             itemDao.delete(item)
             updateCategory(new)
         }
     }
 
-
-    fun updateMarkedItems(int: Int, main: MainItem) {
-        viewModelScope.launch {
-            val new = main.copy(checkedItems = int)
-            updateCategory(new)
-        }
-    }
 
     private fun updateCategory(item: MainItem) {
         viewModelScope.launch {
@@ -143,38 +187,48 @@ class MainViewModel(
     /**
      * Удаляем всю категорию
      */
-    fun deleteItemMain(id: Int, main: MainItem) {
+    fun deleteItemMain(main: MainItem) {
         viewModelScope.launch {
-            itemDao.deleteItemFromCategory(id)
+            itemDao.deleteItemFromCategory(main.id)
             mainItemDao.delete(main)
+
         }
     }
-
 
     /**
      * Сохраняем позицию из RecyclerView в БД
      */
     fun movedItems(mutableList: List<Item>) {
-        mutableList.forEachIndexed { index, item -> viewModelScope.launch {itemDao.update(item.copy(position = index))}}
+        mutableList.forEachIndexed { index, item ->
+            viewModelScope.launch {
+                itemDao.update(
+                    item.copy(
+                        position = index
+                    )
+                )
+            }
+        }
     }
-
 
     /**
      * Обновляем покупку, если изменилось имя или покупка совершена
      */
-    fun updateItem(item: Item) {
+
+    fun updateItem1(item: Item, addOrRemove: Boolean = true, mainItemID: Int = 0) {
         viewModelScope.launch {
             itemDao.update(item)
-        }
-    }
-
-
-    /**
-     * Удаляем пустую заметку, если нет названия категории и ни одной покупки
-     */
-    fun reviewNewFragment(etTitle: String, allItems: Int) {
-        if ((etTitle == "" || etTitle == " ") && allItems == 0) {
-            deleteMainItem(getCategory.value!!)
+            val main = mainItemDao.getCategorySuspend(mainItemID)
+            main?.let {
+                updateCategory(
+                    it.copy(
+                        checkedItems = if (addOrRemove) {
+                            main.checkedItems + 1
+                        } else {
+                            main.checkedItems - 1
+                        }
+                    )
+                )
+            }
         }
     }
 
@@ -184,43 +238,38 @@ class MainViewModel(
      * После этого сравниваем два списка и проверям, все ли категории вынесены в отдельную БД,
      * и если не все, то создаем новую категорию.
      */
-    fun createMainItemsList(listParents: List<Item>, listMainParent: List<MainItem>) {
+    fun createMainItemsList() {
         //список категорий из полей БД покупок
         val listShopCategory: MutableList<Int> = mutableListOf()
-        for (i in listParents) {
-            if (!listShopCategory.contains(i.parent)) {
-                listShopCategory.add(i.parent)
+        val all = itemDao.getAll().asLiveData().value
+        if (!all.isNullOrEmpty()) {
+            for (i in all) {
+                if (!listShopCategory.contains(i.parent)) {
+                    listShopCategory.add(i.parent)
+                }
             }
         }
         //список категорий из БД категорий
         val listMain: MutableList<Int> = mutableListOf()
-        for (i in listMainParent) {
-            if (!listMain.contains(i.id)) {
-                listMain.add(i.id)
+        if (!allMainItems.value.isNullOrEmpty()) {
+            for (i in allMainItems.value!!) {
+                if (!listMain.contains(i.id)) {
+                    listMain.add(i.id)
+                }
             }
-        }
-    }
-
-    /**
-     * Удаляем категорию
-     */
-    fun deleteMainItem(item: MainItem) {
-        viewModelScope.launch {
-            mainItemDao.delete(item)
         }
     }
 }
 
 class MainViewModelFactory(
     private val mainItemDao: MainItemDao,
-    private val itemDao: ItemDao,
-    private val parentID: Int
+    private val itemDao: ItemDao
 ) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(mainItemDao, itemDao, parentID) as T
+            return MainViewModel(mainItemDao, itemDao) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
